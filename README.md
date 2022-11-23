@@ -1,4 +1,4 @@
-# MeU
+# MetU
 
 This is a project based on [MediaPipe Unity Plugin](https://github.com/homuler/MediaPipeUnityPlugin). For the installation, please refer to the [installation instruction](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide).
 
