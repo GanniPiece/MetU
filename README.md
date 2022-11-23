@@ -6,6 +6,9 @@ The project developes under Unity (2021.3.3f1) and [MediaPipe](https://github.co
 
 The goal of this project is to map the skeleton in the MediaPipe to the humanoid skeleton in the Unity.
 
+## DEMO
+[<img src="https://user-images.githubusercontent.com/84123268/203553124-95beb156-3260-4d8d-bbb3-9a2f3a9e0836.png" width=50% height=50%>](https://youtu.be/khKpmSmNCM8)
+
 ## LICENSE
 
 [MIT](https://github.com/GanniPiece/MeU/blob/master/LICENSE)
