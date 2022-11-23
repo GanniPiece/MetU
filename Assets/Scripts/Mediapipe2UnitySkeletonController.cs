@@ -7,7 +7,6 @@ namespace Medipipe.Unity
 {
   public class Mediapipe2UnitySkeletonController : MonoBehaviour
   {
-    private bool dirty;
     private Vector3 mpos;
     public Transform spine;
     public Transform chest;
@@ -24,6 +23,8 @@ namespace Medipipe.Unity
     public Transform leftFoot;
     public Transform rightHand;
     public Transform leftHand;
+    public Transform leftToe;
+    public Transform rightToe;
     public Transform head;
 
     private LandmarkList _target;
@@ -54,6 +55,9 @@ namespace Medipipe.Unity
       leftHand = _anim.GetBoneTransform(HumanBodyBones.LeftHand);
 
       chest = _anim.GetBoneTransform(HumanBodyBones.Chest);
+      leftToe = _anim.GetBoneTransform(HumanBodyBones.LeftToes);
+      rightToe = _anim.GetBoneTransform(HumanBodyBones.RightToes);
+     
     }
 
     private void Update()
@@ -81,7 +85,7 @@ namespace Medipipe.Unity
         _target = _target_new;
       }
 
-      var min_confidence = 0.3f;
+      var min_confidence = 0.8f;
       var adjust = false;
 
       for (var i = 0; i < 33; i++)
@@ -101,14 +105,17 @@ namespace Medipipe.Unity
     {
       CalcHip();
 
-      CalcHead();
       CalcSpine();
+      CalcHead();
 
       CalcRightShoulder();
       CalcLeftShoulder();
 
       CalcRightElbow();
       CalcLeftElbow();
+
+      CalcRightHand();
+      CalcLeftHand();
 
       CalcLeftHip();
       CalcRightHip();
@@ -118,10 +125,6 @@ namespace Medipipe.Unity
 
       CalcLeftFoot();
       CalcRightFoot();
-
-      CalcRightHand();
-      CalcLeftHand();
-
     }
 
     private void CalcHead()
@@ -149,6 +152,7 @@ namespace Medipipe.Unity
 
       var vec1 = shoulder_r - shoulder_l;
       var vec2 = mouth_r - mouth_l;
+
       var angle = Quaternion.FromToRotation(vec1, vec2);
       head.localEulerAngles = new Vector3(0, 0, -20);
       head.Rotate(angle.eulerAngles, Space.World);
@@ -169,15 +173,27 @@ namespace Medipipe.Unity
                               -_target.Landmark[24].Y,
                               -_target.Landmark[24].Z);
 
+      //var vec1 = rightHip.position - leftHip.position;
       var vec1 = Vector3.right;
       var vec2 = hip_r - hip_l;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
+      // rotation
       transform.localEulerAngles = new Vector3(0, 0, 0);
       transform.Rotate(angle.eulerAngles);
-    }
 
-    private void CalcSpine()
+        // transformation
+        //var pos = (hip_l + hip_r) / 2;
+        //var shift = (pos - mpos) / Vector3.Distance(hip_l, hip_r);
+
+        //hip.position += shift * Vector3.Distance(leftHip.position, rightHip.position);
+
+
+
+        //mpos = pos;
+     }
+
+        private void CalcSpine()
     {
       if (_target == null)
       {
@@ -197,15 +213,14 @@ namespace Medipipe.Unity
                               -_target.Landmark[24].Y,
                               -_target.Landmark[24].Z);
 
-      //var vec1 = shoulder_l - shoulder_r;
-
       var hip_m = Vector3.Lerp(hip_l, hip_r, 1 / 2);
       var shoulder_m = Vector3.Lerp(shoulder_l, shoulder_r, 1 / 2);
-      var vec1 = hip_l - hip_r;
+
+      var vec1 = Vector3.Lerp(leftShoulder.position, rightShoulder.position, 1/2) - Vector3.Lerp(leftHip.position, rightHip.position, 1 / 2);
       var vec2 = shoulder_m - hip_m;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
-      spine.localEulerAngles = new Vector3(0, 90, 0);
+
       spine.Rotate(angle.eulerAngles, Space.World);
     }
 
@@ -229,12 +244,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[16].Y,
                               -_target.Landmark[16].Z);
 
-      var vec1 = elbow - shoulder;
+      var vec1 = rightHand.position - rightElbow.position;
       var vec2 = wrist - elbow;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      rightElbow.localRotation = Quaternion.Euler(0, 0, 0);
       rightElbow.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(elbow, shoulder, UnityEngine.Color.blue);
@@ -262,12 +276,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[14].Z);
 
 
-      var vec1 = shoulder - hip;
+      var vec1 = rightElbow.position - rightShoulder.position;
       var vec2 = elbow - shoulder;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      rightShoulder.localRotation = Quaternion.Euler(0, 90, 0);
       rightShoulder.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(hip, shoulder, UnityEngine.Color.blue);
@@ -293,12 +306,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[28].Y,
                               -_target.Landmark[28].Z);
 
-      var vec1 = knee - hip;
+      var vec1 = rightFoot.position - rightKnee.position;
       var vec2 = ankle - knee;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      rightKnee.localRotation = Quaternion.Euler(0, 0, 0);
       rightKnee.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(hip, knee, UnityEngine.Color.blue);
@@ -324,12 +336,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[26].Y,
                               -_target.Landmark[26].Z);
 
-      var vec1 = hip_r - hip_l;
+      var vec1 = rightKnee.position - rightHip.position;
       var vec2 = knee - hip_r;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      rightHip.localRotation = Quaternion.Euler(0, -90, 0);
       rightHip.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(hip_l, hip_r, UnityEngine.Color.blue);
@@ -351,20 +362,25 @@ namespace Medipipe.Unity
                                  -_target.Landmark[28].Y,
                                  -_target.Landmark[28].Z);
 
-      var heal = new Vector3(-_target.Landmark[30].X,
-                              -_target.Landmark[30].Y,
-                              -_target.Landmark[30].Z);
+      var heel = new Vector3(-_target.Landmark[30].X,
+                             -_target.Landmark[30].Y,
+                             -_target.Landmark[30].Z);
 
-      var vec1 = knee - ankle;
-      var vec2 = heal - ankle;
+      var toe = new Vector3(-_target.Landmark[32].X,
+                              -_target.Landmark[32].Y,
+                              -_target.Landmark[32].Z);
+
+      //var vec1 = knee - ankle;
+      var vec1 = Vector3.Cross(rightToe.position - rightFoot.position,
+                                rightKnee.position - rightFoot.position);
+      var vec2 = Vector3.Cross(toe - ankle, knee - ankle);
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      rightFoot.localRotation = Quaternion.Euler(0, 0, -210);
       rightFoot.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(knee, ankle, UnityEngine.Color.blue);
-      Debug.DrawLine(ankle, heal, UnityEngine.Color.red);
+      Debug.DrawLine(ankle, toe, UnityEngine.Color.red);
     }
 
     private void CalcRightHand()
@@ -424,13 +440,11 @@ namespace Medipipe.Unity
 
 
 
-      var vec1 = elbow - shoulder;
+      var vec1 = leftHand.position - leftElbow.position;
       var vec2 = wrist - elbow;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-
-      leftElbow.localRotation = Quaternion.Euler(0, 0, 0);
       leftElbow.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(shoulder, elbow, UnityEngine.Color.blue);
@@ -457,12 +471,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[13].Y,
                               -_target.Landmark[13].Z);
 
-      var vec1 = shoulder - hip;
+      var vec1 = leftElbow.position - leftShoulder.position;
       var vec2 = elbow - shoulder;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      leftShoulder.localRotation = Quaternion.Euler(0, -90, 0);
       leftShoulder.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(shoulder, hip, UnityEngine.Color.blue);
@@ -488,12 +501,11 @@ namespace Medipipe.Unity
                               -_target.Landmark[27].Y,
                               -_target.Landmark[27].Z);
 
-      var vec1 = knee - hip;
+      var vec1 = leftFoot.position - leftKnee.position;
       var vec2 = ankle - knee;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      leftKnee.localRotation = Quaternion.Euler(0, 0, 0);
       leftKnee.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(hip, knee, UnityEngine.Color.blue);
@@ -519,12 +531,11 @@ namespace Medipipe.Unity
                              -_target.Landmark[25].Y,
                              -_target.Landmark[25].Z);
 
-      var vec1 = hip_l - hip_r;
+      var vec1 = leftKnee.position - leftHip.position;
       var vec2 = knee - hip_l;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      leftHip.localRotation = Quaternion.Euler(0, 90, 0);
       leftHip.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(hip_l, hip_r, UnityEngine.Color.blue);
@@ -546,20 +557,19 @@ namespace Medipipe.Unity
                                  -_target.Landmark[27].Y,
                                  -_target.Landmark[27].Z);
 
-      var heal = new Vector3(-_target.Landmark[29].X,
-                              -_target.Landmark[29].Y,
-                              -_target.Landmark[29].Z);
+      var toe = new Vector3(-_target.Landmark[31].X,
+                              -_target.Landmark[31].Y,
+                              -_target.Landmark[31].Z);
 
-      var vec1 = knee - ankle;
-      var vec2 = heal - ankle;
+      var vec1 = leftToe.position - leftFoot.position;
+      var vec2 = toe - ankle;
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
-      leftFoot.localRotation = Quaternion.Euler(0, 0, -210);
       leftFoot.Rotate(angle.eulerAngles, Space.World);
 
       Debug.DrawLine(knee, ankle, UnityEngine.Color.blue);
-      Debug.DrawLine(ankle, heal, UnityEngine.Color.red);
+      Debug.DrawLine(ankle, toe, UnityEngine.Color.red);
     }
 
     private void CalcLeftHand()
@@ -581,7 +591,7 @@ namespace Medipipe.Unity
                               -_target.Landmark[17].Y,
                               -_target.Landmark[17].Z);
       var vec1 = Vector3.Cross(_anim.GetBoneTransform(HumanBodyBones.LeftIndexProximal).position - leftHand.position, _anim.GetBoneTransform(HumanBodyBones.LeftRingProximal).position - leftHand.position);
-      var vec2 = Vector3.Cross(pinky - wrist, index - wrist);
+      var vec2 = Vector3.Cross(index - wrist, pinky - wrist);
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
