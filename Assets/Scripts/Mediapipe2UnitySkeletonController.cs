@@ -561,8 +561,9 @@ namespace Medipipe.Unity
                               -_target.Landmark[31].Y,
                               -_target.Landmark[31].Z);
 
-      var vec1 = leftToe.position - leftFoot.position;
-      var vec2 = toe - ankle;
+      var vec1 = Vector3.Cross(leftToe.position - leftFoot.position,
+                                leftKnee.position - leftFoot.position);
+      var vec2 = Vector3.Cross(toe - ankle, knee - ankle);
 
       var angle = Quaternion.FromToRotation(vec1, vec2);
 
