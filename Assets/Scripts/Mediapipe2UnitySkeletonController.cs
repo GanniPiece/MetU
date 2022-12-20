@@ -3,11 +3,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-namespace Medipipe.Unity
+namespace Mediapipe.Unity
 {
   public class Mediapipe2UnitySkeletonController : MonoBehaviour
   {
-    private Vector3 mpos;
     public Transform spine;
     public Transform chest;
     public Transform rightElbow;
@@ -27,78 +26,68 @@ namespace Medipipe.Unity
     public Transform rightToe;
     public Transform head;
 
+    private HumanJointFactory jointFactory;
+    private HashSet<HumanJointCalculator> calculators;
+
     private LandmarkList _target;
     private LandmarkList _target_new;
     private Animator _anim;
 
     private void Start()
-    {
+    {      
       _anim = GetComponent<Animator>();
-      head = _anim.GetBoneTransform(HumanBodyBones.Neck);
-      hip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Hips);
-      spine = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Spine);
-      rightElbow = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightLowerArm);
-      rightShoulder = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightUpperArm);
-      leftElbow = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftLowerArm);
-      leftShoulder = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftUpperArm);
 
-      leftKnee = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftLowerLeg);
-      rightKnee = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightLowerLeg);
+      jointFactory = new HumanJointFactory(_anim);
+      calculators = jointFactory.Generate();
 
-      rightHip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightUpperLeg);
-      leftHip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftUpperLeg);
+      // head = _anim.GetBoneTransform(HumanBodyBones.Neck);
+      // hip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Hips);
+      // spine = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Spine);
+      // rightElbow = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightLowerArm);
+      // rightShoulder = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightUpperArm);
+      // leftElbow = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftLowerArm);
+      // leftShoulder = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftUpperArm);
 
-      rightFoot = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightFoot);
-      leftFoot = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftFoot);
+      // leftKnee = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftLowerLeg);
+      // rightKnee = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightLowerLeg);
 
-      rightHand = _anim.GetBoneTransform(HumanBodyBones.RightHand);
-      leftHand = _anim.GetBoneTransform(HumanBodyBones.LeftHand);
+      // rightHip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightUpperLeg);
+      // leftHip = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftUpperLeg);
 
-      chest = _anim.GetBoneTransform(HumanBodyBones.Chest);
-      leftToe = _anim.GetBoneTransform(HumanBodyBones.LeftToes);
-      rightToe = _anim.GetBoneTransform(HumanBodyBones.RightToes);
+      // rightFoot = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightFoot);
+      // leftFoot = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftFoot);
+
+      // rightHand = _anim.GetBoneTransform(HumanBodyBones.RightHand);
+      // leftHand = _anim.GetBoneTransform(HumanBodyBones.LeftHand);
+
+      // chest = _anim.GetBoneTransform(HumanBodyBones.Chest);
+      // leftToe = _anim.GetBoneTransform(HumanBodyBones.LeftToes);
+      // rightToe = _anim.GetBoneTransform(HumanBodyBones.RightToes);
      
+
+
     }
 
     private void Update()
     {
 
-      if (AdjustMovement())
+      // if (AdjustMovement())
+      // {
+      //   Calc();
+      // }
+      foreach (var calculator in calculators)
       {
-        Calc();
+        calculator.Calc();
       }
     }
 
     public void Refresh(LandmarkList target)
     {
-      _target_new = target;
-    }
-
-    private bool AdjustMovement()
-    {
-      if (_target_new == null)
+      // _target_new = target;
+      foreach (var calculator in calculators)
       {
-        return false;
+        calculator.Refresh(target);
       }
-      if (_target == null)
-      {
-        _target = _target_new;
-      }
-
-      var min_confidence = 0.8f;
-      var adjust = false;
-
-      for (var i = 0; i < 33; i++)
-      {
-        var conf = _target_new.Landmark[i].Visibility;
-
-        if (conf >= min_confidence)
-        {
-          _target.Landmark[i] = _target_new.Landmark[i];
-          adjust = true;
-        }
-      }
-      return adjust;
     }
 
     private void Calc()
@@ -182,17 +171,11 @@ namespace Medipipe.Unity
       transform.localEulerAngles = new Vector3(0, 0, 0);
       transform.Rotate(angle.eulerAngles);
 
-        // transformation
-        //var pos = (hip_l + hip_r) / 2;
-        //var shift = (pos - mpos) / Vector3.Distance(hip_l, hip_r);
-
-        //hip.position += shift * Vector3.Distance(leftHip.position, rightHip.position);
-
-
-
-        //mpos = pos;
      }
 
+    /// <summary>
+    /// Calc Spine Rotation.
+    /// </summary>
         private void CalcSpine()
     {
       if (_target == null)

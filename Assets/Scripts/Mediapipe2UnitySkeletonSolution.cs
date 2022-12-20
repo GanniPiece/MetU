@@ -1,17 +1,17 @@
-// Copyright (c) 2021 homuler
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 using System.Collections;
-using Medipipe.Unity;
+using Mediapipe.Unity;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Holistic
 {
   public class Mediapipe2UnitySkeletonSolution : ImageSourceSolution<HolisticTrackingGraph>
   {
+    [SerializeField] private RectTransform _worldAnnotationArea;
+    [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
+    [SerializeField] private HolisticLandmarkListAnnotationController _holisticAnnotationController;
+    [SerializeField] private MaskAnnotationController _segmentationMaskAnnotationController;
+    [SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
+    
     [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
     [SerializeField] private Mediapipe2UnitySkeletonController _mediapipe2UnitySkeletonController;
 
@@ -55,6 +55,12 @@ namespace Mediapipe.Unity.Holistic
     {
       get => graphRunner.minTrackingConfidence;
       set => graphRunner.minTrackingConfidence = value;
+    }
+
+    protected override void SetupScreen(ImageSource imageSource)
+    {
+      base.SetupScreen(imageSource);
+      _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
     }
 
     protected override void OnStartRun()

@@ -1083,6 +1083,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8571076842583978906, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: solution
@@ -1092,6 +1097,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _solution
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571076843237194837, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8571076843525237352, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
@@ -1301,6 +1311,11 @@ MonoBehaviour:
   graphRunner: {fileID: 956331989}
   textureFramePool: {fileID: 956331992}
   runningMode: 0
+  _worldAnnotationArea: {fileID: 1936307554}
+  _poseDetectionAnnotationController: {fileID: 1375628863}
+  _holisticAnnotationController: {fileID: 1375628862}
+  _segmentationMaskAnnotationController: {fileID: 1375628865}
+  _poseRoiAnnotationController: {fileID: 1375628861}
   _poseWorldLandmarksAnnotationController: {fileID: 1936307555}
   _mediapipe2UnitySkeletonController: {fileID: 159622012}
 --- !u!4 &956331988
@@ -2535,7 +2550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9909012
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalRotation.x
@@ -2543,7 +2558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.13459148
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2555,7 +2570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -15.47
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

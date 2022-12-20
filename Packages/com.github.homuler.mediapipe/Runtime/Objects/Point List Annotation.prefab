@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -45,5 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _annotationPrefab: {fileID: 5105739270100195971, guid: cd50999c161e69345953a2cb517dd339,
     type: 3}
-  color: {r: 0, g: 1, b: 0, a: 1}
-  radius: 15
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _radius: 15
