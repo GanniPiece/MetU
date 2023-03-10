@@ -6,6 +6,8 @@ The project developes under Unity (2021.3.3f1) and [MediaPipe](https://github.co
 
 The goal of this project is to map the skeleton in the MediaPipe to the humanoid skeleton in the Unity.
 
+> A Chinese tutorial can be reached here: [tutorial](https://blog.gannipiece.tw/posts/%E5%A6%82%E4%BD%95%E5%B0%87-mediapipe-%E7%9A%84%E9%AA%A8%E6%9E%B6%E8%BD%89%E6%8F%9B%E5%88%B0-unity-%E4%BA%BA%E9%AB%94%E9%AA%A8%E6%9E%B6/)
+
 ## DEMO
 [<img src="https://user-images.githubusercontent.com/84123268/203553124-95beb156-3260-4d8d-bbb3-9a2f3a9e0836.png" width=50% height=50%>](https://youtu.be/khKpmSmNCM8)
 
